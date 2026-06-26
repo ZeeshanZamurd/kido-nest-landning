@@ -1,0 +1,170 @@
+@import "tailwindcss";
+
+:root {
+  --kidnest-violet: #7B4DFF;
+  --kidnest-pink: #FF4DB8;
+  --kidnest-cyan: #5FE9FF;
+  --kidnest-bg: #F8FAFC;
+  --kidnest-text: #0F172A;
+  --kidnest-border: #E2E8F0;
+  --kidnest-child-primary: #FF6B9D;
+  --kidnest-child-accent: #FFD93D;
+  --kidnest-success: #10B981;
+  --kidnest-warning: #F59E0B;
+}
+
+@theme inline {
+  --color-kidnest-violet: var(--kidnest-violet);
+  --color-kidnest-pink: var(--kidnest-pink);
+  --color-kidnest-cyan: var(--kidnest-cyan);
+  --color-kidnest-bg: var(--kidnest-bg);
+  --color-kidnest-success: var(--kidnest-success);
+  --color-kidnest-warning: var(--kidnest-warning);
+  --color-kidnest-child-primary: var(--kidnest-child-primary);
+  --color-kidnest-child-accent: var(--kidnest-child-accent);
+  --color-kidnest-slate-950: #020617;
+  --color-kidnest-slate-900: #0F172A;
+  --color-kidnest-slate-800: #1E293B;
+  --color-kidnest-slate-700: #334155;
+  --color-kidnest-slate-600: #475569;
+  --color-kidnest-slate-500: #64748B;
+  --color-kidnest-slate-400: #94A3B8;
+  --color-kidnest-slate-300: #CBD5E1;
+  --color-kidnest-slate-200: #E2E8F0;
+  --color-kidnest-slate-100: #F1F5F9;
+  --color-kidnest-slate-50: #F8FAFC;
+  --font-sans: var(--font-nunito), ui-rounded, "Nunito", system-ui, sans-serif;
+  --shadow-card: 0 4px 24px rgba(15, 23, 42, 0.08);
+  --shadow-glow: 0 0 40px rgba(123, 77, 255, 0.18);
+  --shadow-brand: 0 8px 20px rgba(123, 77, 255, 0.28);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #ffffff;
+  color: var(--kidnest-text);
+  font-family: var(--font-nunito), "Nunito", ui-rounded, system-ui, sans-serif;
+}
+
+::selection {
+  background: rgba(123, 77, 255, 0.2);
+  color: #0F172A;
+}
+
+/* GPU-friendly hero animations (compositor thread, not JS per frame) */
+.gpu-layer {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+@keyframes kn-hero-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+
+@keyframes kn-cloud-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(6px, -14px, 0);
+  }
+}
+
+@keyframes kn-twinkle {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes kn-sparkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.7);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes kn-card-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+
+@keyframes kn-glow-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.12);
+  }
+}
+
+.kn-hero-float {
+  animation: kn-hero-float 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+.kn-animate-cloud {
+  animation: kn-cloud-drift 7s ease-in-out infinite;
+  will-change: transform;
+}
+
+.kn-animate-star {
+  animation: kn-twinkle 3.5s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.kn-animate-sparkle {
+  animation: kn-sparkle 2.8s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.kn-card-float {
+  animation: kn-card-float 5.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+.kn-glow-pulse {
+  animation: kn-glow-pulse 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kn-hero-float,
+  .kn-animate-cloud,
+  .kn-animate-star,
+  .kn-animate-sparkle,
+  .kn-card-float,
+  .kn-glow-pulse {
+    animation: none;
+  }
+}
