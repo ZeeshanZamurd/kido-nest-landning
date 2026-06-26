@@ -3,3 +3,9 @@ export const BRAND_IMAGE = "/saleh.png";
 
 /** Hero parallax animation — child exploring safely on KidoNest */
 export const HERO_ILLUSTRATION = "/kidnest-landing.png";
+
+/** Coming soon teaser video — place at public/kido-nest.mp4 */
+export const COMING_SOON_VIDEO = "/kido-nest.mp4";
+
+/** Poster shown before teaser video loads */
+export const COMING_SOON_VIDEO_POSTER = "/kidnest-landing.png";

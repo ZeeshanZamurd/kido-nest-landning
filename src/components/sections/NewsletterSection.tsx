@@ -1,17 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import { Mail } from "lucide-react";
 import AnimatedSection from "@/components/ui/AnimatedSection";
+import { useWaitlistForm } from "@/lib/hooks/useWaitlistForm";
 
 export default function NewsletterSection() {
-  const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email.trim()) setSubmitted(true);
-  };
+  const { email, setEmail, submitted, loading, error, message, handleSubmit } =
+    useWaitlistForm("newsletter");
 
   return (
     <AnimatedSection id="contact" className="bg-white pb-14 pt-4 sm:pb-16">
@@ -28,28 +23,37 @@ export default function NewsletterSection() {
 
           {submitted ? (
             <p className="text-sm font-semibold text-kidnest-violet sm:shrink-0">
-              Thanks! We&apos;ll notify {email}
+              {message || `Thanks! We'll notify ${email}`}
             </p>
           ) : (
-            <form
-              onSubmit={handleSubmit}
-              className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center"
-            >
-              <input
-                type="email"
-                required
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-full border-0 bg-white px-5 py-3 text-sm text-kidnest-slate-900 shadow-sm placeholder:text-kidnest-slate-400 focus:outline-none focus:ring-2 focus:ring-kidnest-violet/30 sm:min-w-[220px]"
-              />
-              <button
-                type="submit"
-                className="shrink-0 rounded-full bg-kidnest-violet px-6 py-3 text-sm font-bold text-white shadow-brand transition-transform hover:scale-[1.02]"
+            <div className="w-full sm:w-auto">
+              <form
+                onSubmit={handleSubmit}
+                className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center"
               >
-                Notify Me
-              </button>
-            </form>
+                <input
+                  type="email"
+                  required
+                  disabled={loading}
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full rounded-full border-0 bg-white px-5 py-3 text-sm text-kidnest-slate-900 shadow-sm placeholder:text-kidnest-slate-400 focus:outline-none focus:ring-2 focus:ring-kidnest-violet/30 disabled:opacity-70 sm:min-w-[220px]"
+                />
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="shrink-0 rounded-full bg-kidnest-violet px-6 py-3 text-sm font-bold text-white shadow-brand transition-transform hover:scale-[1.02] disabled:opacity-70"
+                >
+                  {loading ? "Saving…" : "Notify Me"}
+                </button>
+              </form>
+              {error ? (
+                <p className="mt-2 text-sm font-medium text-red-600" role="alert">
+                  {error}
+                </p>
+              ) : null}
+            </div>
           )}
         </div>
       </div>

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import Button from "@/components/ui/Button";
 import HeroIllustrationStage from "@/components/hero/HeroIllustrationStage";
+import HeroWaitlistForm from "@/components/hero/HeroWaitlistForm";
 import { heroBullets } from "@/constants/content";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
 
@@ -21,16 +22,14 @@ export default function HeroSection() {
       id="home"
       className="relative min-h-[90vh] overflow-hidden bg-[#fafbff]"
     >
-      {/* Page-wide ambient gradients */}
       <div className="pointer-events-none absolute inset-0" aria-hidden>
-        <div className="absolute -left-32 top-0 h-[500px] w-[500px] rounded-full bg-kidnest-violet/8 blur-2xl" />
-        <div className="absolute -right-32 top-20 h-[600px] w-[600px] rounded-full bg-kidnest-pink/10 blur-2xl" />
-        <div className="absolute bottom-0 left-1/3 h-[400px] w-[400px] rounded-full bg-kidnest-cyan/8 blur-xl" />
+        <div className="absolute -left-32 top-0 h-[500px] w-[500px] rounded-full bg-kidnest-violet/8 blur-3xl" />
+        <div className="absolute -right-32 top-20 h-[600px] w-[600px] rounded-full bg-kidnest-pink/10 blur-3xl" />
+        <div className="absolute bottom-0 left-1/3 h-[400px] w-[400px] rounded-full bg-kidnest-cyan/8 blur-3xl" />
       </div>
 
       <div className="relative mx-auto flex min-h-[90vh] max-w-7xl items-center px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
         <div className="grid w-full items-center gap-12 lg:grid-cols-2 lg:gap-16 xl:gap-20">
-          {/* Left — content */}
           <motion.div
             variants={staggerContainer}
             initial="hidden"
@@ -60,7 +59,7 @@ export default function HeroSection() {
               variants={fadeInUp}
               className="max-w-lg text-lg font-medium leading-[1.75] text-kidnest-slate-600 sm:text-xl sm:leading-8"
             >
-              Kido Nest gives parents the power to approve videos, manage
+              KidoNest gives parents the power to approve videos, manage
               interests, and create a safe screen time experience for kids.
             </motion.p>
 
@@ -75,20 +74,19 @@ export default function HeroSection() {
               ))}
             </motion.ul>
 
-            <motion.div
-              variants={fadeInUp}
-              className="flex flex-col gap-4 pt-2 sm:flex-row sm:items-center"
-            >
-              <Button href="#coming-soon" className="px-8 py-3.5 text-base">
-                Coming Soon
-              </Button>
-              <Button href="#features" variant="secondary" className="px-8 py-3.5 text-base">
-                Learn More
-              </Button>
+            <motion.div variants={fadeInUp} className="space-y-5 pt-2">
+              <HeroWaitlistForm variant="hero" />
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                <Button href="#coming-soon" className="px-8 py-3.5 text-base">
+                  Coming Soon
+                </Button>
+                <Button href="#features" variant="secondary" className="px-8 py-3.5 text-base">
+                  Learn More
+                </Button>
+              </div>
             </motion.div>
           </motion.div>
 
-          {/* Right — immersive illustration stage */}
           <motion.div
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
