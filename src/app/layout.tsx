@@ -13,7 +13,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://kido-nest.fun";
 export const metadata: Metadata = {
   title: "KidoNest — You Control. They Explore.",
   description:
-    "KidoNest gives parents the power to approve videos, manage interests, and create a safe screen time experience for kids.",
+    "KidoNest is live on Google Play. Parents approve videos, manage interests, and create a safe screen time experience for kids.",
   keywords: [
     "parental control",
     "kids videos",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "KidoNest — You Control. They Explore.",
     description:
-      "A safe, parent-controlled video platform built for families.",
+      "KidoNest is live on Google Play — a safe, parent-controlled video platform built for families.",
     type: "website",
     url: siteUrl,
     siteName: "KidoNest",
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "KidoNest — You Control. They Explore.",
     description:
-      "A safe, parent-controlled video platform built for families.",
+      "KidoNest is live on Google Play — a safe, parent-controlled video platform built for families.",
     images: ["/og-image.png"],
   },
 };

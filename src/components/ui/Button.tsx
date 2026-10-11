@@ -11,6 +11,7 @@ type Props = {
   variant?: Variant;
   className?: string;
   href?: string;
+  external?: boolean;
   type?: "button" | "submit";
   onClick?: () => void;
 };
@@ -28,6 +29,7 @@ export default function Button({
   variant = "primary",
   className,
   href,
+  external = false,
   type = "button",
   onClick,
 }: Props) {
@@ -42,6 +44,9 @@ export default function Button({
       <motion.a
         href={href}
         className={classes}
+        {...(external
+          ? { target: "_blank", rel: "noopener noreferrer" }
+          : {})}
         {...scaleOnHover}
       >
         {children}

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import BrandWordmark from "@/components/brand/BrandWordmark";
+import { PLAY_STORE_URL } from "@/constants/branding";
 import { navLinks } from "@/constants/content";
 
 export default function Navbar() {
@@ -30,10 +31,12 @@ export default function Navbar() {
         </ul>
 
         <a
-          href="#coming-soon"
+          href={PLAY_STORE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
           className="hidden rounded-full bg-gradient-to-r from-kidnest-violet to-[#a88bff] px-5 py-2.5 text-sm font-bold text-white shadow-brand transition-transform hover:scale-[1.02] md:inline-block"
         >
-          Coming Soon
+          We&apos;re Online
         </a>
 
         <button
@@ -69,10 +72,12 @@ export default function Navbar() {
             </ul>
             <div className="border-t border-kidnest-slate-100 px-4 py-3">
               <a
-                href="#coming-soon"
+                href={PLAY_STORE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="block rounded-full bg-kidnest-violet py-3 text-center text-sm font-bold text-white"
               >
-                Coming Soon
+                We&apos;re Online
               </a>
             </div>
           </motion.div>

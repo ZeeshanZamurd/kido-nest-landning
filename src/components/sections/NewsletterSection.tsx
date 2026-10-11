@@ -17,7 +17,7 @@ export default function NewsletterSection() {
               <Mail className="h-5 w-5 text-kidnest-slate-800" />
             </div>
             <p className="text-sm font-semibold text-kidnest-slate-800 sm:text-base">
-              Stay Updated — Subscribe to get notified when we launch.
+              Stay Updated — News, tips, and the iOS launch.
             </p>
           </div>
 

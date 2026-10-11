@@ -4,10 +4,16 @@ import BrandWordmark from "@/components/brand/BrandWordmark";
 type Props = {
   title: string;
   description?: string;
+  lastUpdated?: string;
   children: React.ReactNode;
 };
 
-export default function LegalPageShell({ title, description, children }: Props) {
+export default function LegalPageShell({
+  title,
+  description,
+  lastUpdated = "July 4, 2026",
+  children,
+}: Props) {
   return (
     <div className="min-h-screen bg-kidnest-slate-50">
       <header className="border-b border-kidnest-slate-200 bg-white">
@@ -35,7 +41,7 @@ export default function LegalPageShell({ title, description, children }: Props) 
             </p>
           ) : null}
           <p className="mt-2 text-sm text-kidnest-slate-500">
-            Last updated: July 4, 2026
+            Last updated: {lastUpdated}
           </p>
         </div>
 

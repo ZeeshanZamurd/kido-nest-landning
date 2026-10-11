@@ -5,6 +5,7 @@ import { Check } from "lucide-react";
 import Button from "@/components/ui/Button";
 import HeroIllustrationStage from "@/components/hero/HeroIllustrationStage";
 import HeroWaitlistForm from "@/components/hero/HeroWaitlistForm";
+import { PLAY_STORE_URL } from "@/constants/branding";
 import { heroBullets } from "@/constants/content";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
 
@@ -41,7 +42,7 @@ export default function HeroSection() {
               className="inline-flex items-center gap-2 rounded-full border border-kidnest-violet/15 bg-white/70 px-5 py-2 text-xs font-bold tracking-wide text-kidnest-violet shadow-sm backdrop-blur-sm sm:text-sm"
             >
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-kidnest-violet" />
-              A Safe Digital World for Your Child
+              We&apos;re Online on Google Play
             </motion.span>
 
             <motion.h1
@@ -77,8 +78,8 @@ export default function HeroSection() {
             <motion.div variants={fadeInUp} className="space-y-5 pt-2">
               <HeroWaitlistForm variant="hero" />
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                <Button href="#coming-soon" className="px-8 py-3.5 text-base">
-                  Coming Soon
+                <Button href={PLAY_STORE_URL} external className="px-8 py-3.5 text-base">
+                  Get it on Google Play
                 </Button>
                 <Button href="#features" variant="secondary" className="px-8 py-3.5 text-base">
                   Learn More

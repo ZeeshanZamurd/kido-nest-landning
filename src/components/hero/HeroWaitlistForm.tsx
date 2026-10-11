@@ -23,11 +23,11 @@ export default function HeroWaitlistForm({ variant = "hero" }: Props) {
       >
         {message || (
           <>
-            You&apos;re on the list! We&apos;ll notify{" "}
+            You&apos;re on the list! We&apos;ll send updates to{" "}
             <span className={isOverlay ? "text-kidnest-child-accent" : "text-kidnest-violet"}>
               {email}
-            </span>{" "}
-            at launch.
+            </span>
+            .
           </>
         )}
       </p>
@@ -66,7 +66,7 @@ export default function HeroWaitlistForm({ variant = "hero" }: Props) {
               : "shrink-0 rounded-full bg-gradient-to-r from-kidnest-violet to-[#a88bff] px-8 py-3.5 text-sm font-extrabold text-white shadow-brand transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 sm:py-4 sm:text-base"
           }
         >
-          {loading ? "Joining…" : "Join Waitlist"}
+          {loading ? "Saving…" : "Get Updates"}
         </button>
       </form>
       {error ? (

@@ -19,6 +19,7 @@ export default function PrivacyPage() {
     <LegalPageShell
       title="Privacy Policy"
       description="KidoNest is a parent-controlled video platform for families. This policy explains what we collect, why we collect it, and the choices you have."
+      lastUpdated="September 30, 2026"
     >
       <LegalSection title="1. Who we are">
         <p>
@@ -35,19 +36,47 @@ export default function PrivacyPage() {
       <LegalSection title="2. Information we collect">
         <p>
           <strong>Parent account information:</strong> name, email address, authentication
-          identifiers, subscription status, and settings you choose in the app.
+          identifiers (including Firebase user IDs), subscription status, and settings you choose in
+          the app.
         </p>
         <p>
           <strong>Child profile information:</strong> profile name, avatar, interests, viewing
           history, favorites, and parent-approved assignments created by the parent account.
         </p>
         <p>
-          <strong>Usage and device data:</strong> app interactions, crash diagnostics, device type,
-          operating system, and general technical logs needed to operate and secure the service.
+          <strong>Contact details you submit:</strong> if you request a channel, playlist, or video,
+          we collect the email address or phone number you provide so we can contact you about that
+          request.
+        </p>
+        <p>
+          <strong>Device or other IDs:</strong> identifiers tied to the app install or device that
+          our service providers use to sign you in, prevent fraud, and operate playback. This
+          includes Firebase app/installation identifiers sent to Google for authentication, and
+          device fingerprinting data sent to Stripe when you subscribe. YouTube playback in the app
+          may also send identifiers to Google.
+        </p>
+        <p>
+          <strong>Approximate location:</strong> at sign-up we look up a country from your IP
+          address (via ipapi.co) so we can set account region. We do not collect precise GPS
+          location.
+        </p>
+        <p>
+          <strong>Installed apps:</strong> if you use parental app blocking, we read the list of
+          apps on the device and store the package names you choose to block on our servers so the
+          block list can sync to that child profile.
+        </p>
+        <p>
+          <strong>App activity:</strong> watch progress, favorites, search queries in Discover, and
+          other in-app actions needed to run parent-approved viewing.
+        </p>
+        <p>
+          <strong>Diagnostics:</strong> technical logs (device type, OS, IP address, and error
+          details) needed to operate, secure, and debug the service.
         </p>
         <p>
           <strong>Payment information:</strong> subscription purchases are processed by Stripe. We do
-          not store full payment card numbers on our servers.
+          not store full payment card numbers on our servers. Stripe collects payment details and
+          related fraud-prevention data as an independent payment processor.
         </p>
         <p>
           <strong>Waitlist and support requests:</strong> email address and any message you submit
@@ -80,16 +109,21 @@ export default function PrivacyPage() {
       </LegalSection>
 
       <LegalSection title="5. How we share information">
-        <p>We may share information with service providers that help us run KidoNest, including:</p>
+        <p>We share information with service providers that help us run KidoNest, including:</p>
         <ul className="list-disc space-y-2 pl-5">
-          <li>Firebase / Google for authentication;</li>
-          <li>Stripe for subscription billing;</li>
-          <li>cloud hosting and media storage providers;</li>
-          <li>analytics and crash reporting tools used to maintain app quality.</li>
+          <li>
+            Firebase / Google — authentication, account identifiers, and in-app YouTube playback;
+          </li>
+          <li>
+            Stripe — subscription billing and fraud prevention (including device identifiers);
+          </li>
+          <li>ipapi.co — IP-based country lookup at account creation;</li>
+          <li>cloud hosting and media storage providers that host our API and video files.</li>
         </ul>
         <p>
-          We do not sell personal information. We may disclose information if required by law or to
-          protect users, our rights, or the security of the service.
+          We do not sell personal information. We do not use collected data for advertising or
+          tracking across other apps. We may disclose information if required by law or to protect
+          users, our rights, or the security of the service.
         </p>
       </LegalSection>
 
