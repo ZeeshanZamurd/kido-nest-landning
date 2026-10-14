@@ -45,6 +45,43 @@
 
 html {
   scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(123, 77, 255, 0.55) transparent;
+}
+
+html::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: rgba(123, 77, 255, 0.55);
+  border-radius: 999px;
+}
+
+html::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.kn-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(123, 77, 255, 0.55) transparent;
+}
+
+.kn-scroll::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.kn-scroll::-webkit-scrollbar-thumb {
+  background: rgba(123, 77, 255, 0.55);
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+}
+
+.kn-scroll::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 body {

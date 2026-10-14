@@ -8,6 +8,8 @@ import {
   Home,
   Maximize,
   Menu,
+  PanelRightClose,
+  PanelRightOpen,
   Pause,
   Play,
   Search,
@@ -55,7 +57,9 @@ export default function WatchHome() {
   const [languageId, setLanguageId] = useState("");
   const [rail, setRail] = useState<Rail>("home");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [parentsOpen, setParentsOpen] = useState(false);
+  const [railMinimized, setRailMinimized] = useState(false);
   const [videos, setVideos] = useState<CatalogVideo[]>([]);
   const [shorts, setShorts] = useState<CatalogVideo[]>([]);
   const [channels, setChannels] = useState<CatalogChannel[]>([]);
@@ -73,6 +77,7 @@ export default function WatchHome() {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [history, setHistory] = useState<string[]>([]);
   const [known, setKnown] = useState<Record<string, CatalogVideo>>({});
+  const layoutReady = useRef(false);
 
   function remember(items: CatalogVideo[]) {
     setKnown((current) => {
@@ -88,6 +93,8 @@ export default function WatchHome() {
       const savedHistory = localStorage.getItem("kidnest-history");
       if (savedFavorites) setFavorites(JSON.parse(savedFavorites) as string[]);
       if (savedHistory) setHistory(JSON.parse(savedHistory) as string[]);
+      setSidebarCollapsed(localStorage.getItem("kidnest-side-min") === "1");
+      setRailMinimized(localStorage.getItem("kidnest-rail-min") === "1");
     } catch {
       /* ignore private-mode storage */
     }
@@ -100,6 +107,15 @@ export default function WatchHome() {
   useEffect(() => {
     localStorage.setItem("kidnest-history", JSON.stringify(history));
   }, [history]);
+
+  useEffect(() => {
+    if (!layoutReady.current) {
+      layoutReady.current = true;
+      return;
+    }
+    localStorage.setItem("kidnest-side-min", sidebarCollapsed ? "1" : "0");
+    localStorage.setItem("kidnest-rail-min", railMinimized ? "1" : "0");
+  }, [sidebarCollapsed, railMinimized]);
 
   const loadTaxonomy = useCallback(async () => {
     const [categoryPage, languagePage] = await Promise.all([
@@ -247,21 +263,27 @@ export default function WatchHome() {
   const gridVideos = rail === "favorites" ? favoriteVideos : rail === "history" ? historyVideos : videos;
 
   return (
-    <div className="min-h-screen bg-[#0f0f12] text-white">
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-[#0f0f12]/95 backdrop-blur">
-        <div className="flex flex-wrap items-center gap-2 px-3 py-2 sm:gap-3 sm:px-4 sm:py-3">
+    <div className="kn-scroll min-h-screen overflow-x-hidden bg-[#0f0f0f] text-white">
+      <header className="sticky top-0 z-40 h-14 border-b border-white/10 bg-[#0f0f0f]">
+        <div className="flex h-full items-center gap-2 px-2 sm:gap-3 sm:px-4">
           <button
             type="button"
-            className="rounded-full p-2 hover:bg-white/10 lg:hidden"
-            aria-label="Open menu"
-            onClick={() => setSidebarOpen(true)}
+            className="rounded-full p-2 hover:bg-white/10"
+            aria-label={sidebarCollapsed ? "Expand menu" : "Menu"}
+            onClick={() => {
+              if (window.matchMedia("(min-width: 1024px)").matches) {
+                setSidebarCollapsed((current) => !current);
+              } else {
+                setSidebarOpen(true);
+              }
+            }}
           >
             <Menu className="h-5 w-5" />
           </button>
           <button type="button" onClick={() => openRail("home")} className="shrink-0">
-            <BrandWordmark size={32} priority />
+            <BrandWordmark size={28} priority />
           </button>
-          <form onSubmit={onSearch} className="order-last flex min-w-0 w-full flex-1 sm:order-none sm:w-auto">
+          <form onSubmit={onSearch} className="mx-auto hidden min-w-0 max-w-[640px] flex-1 sm:flex">
             <label className="sr-only" htmlFor="catalog-search">
               Search videos and channels
             </label>
@@ -269,42 +291,76 @@ export default function WatchHome() {
               id="catalog-search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search videos and channels"
-              className="min-w-0 flex-1 rounded-l-full border border-white/15 bg-white/5 px-4 py-2 text-sm outline-none placeholder:text-white/40 focus:border-kidnest-violet"
+              placeholder="Search"
+              className="min-w-0 flex-1 rounded-l-full border border-white/15 bg-[#121212] px-4 py-2 text-sm outline-none placeholder:text-white/45 focus:border-kidnest-violet"
             />
             <button
               type="submit"
-              className="rounded-r-full border border-l-0 border-white/15 bg-white/10 px-4 hover:bg-white/15"
+              className="rounded-r-full border border-l-0 border-white/15 bg-white/10 px-5 hover:bg-white/15"
               aria-label="Search"
             >
               <Search className="h-4 w-4" />
             </button>
           </form>
-          <button
-            type="button"
-            className="ml-auto inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-2 text-sm font-semibold xl:hidden"
-            onClick={() => setParentsOpen(true)}
-          >
-            <Shield className="h-4 w-4 text-kidnest-child-accent" />
-            Parents
-          </button>
-          <a
-            href={PLAY_STORE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-full bg-kidnest-violet px-3 py-2 text-sm font-bold text-white sm:px-4"
-          >
-            Get the App
-          </a>
+          <div className="ml-auto flex shrink-0 items-center gap-2">
+            <button
+              type="button"
+              className="inline-flex items-center gap-2 rounded-full px-2 py-2 text-sm font-semibold hover:bg-white/10 sm:px-3"
+              aria-label={railMinimized ? "Show parents panel" : "Parents"}
+              onClick={() => {
+                if (window.matchMedia("(min-width: 1280px)").matches) {
+                  setRailMinimized((current) => !current);
+                } else {
+                  setParentsOpen(true);
+                  setRailMinimized(false);
+                }
+              }}
+            >
+              {railMinimized ? (
+                <PanelRightOpen className="h-4 w-4 text-kidnest-violet" />
+              ) : (
+                <Shield className="h-4 w-4 text-kidnest-child-accent" />
+              )}
+              <span className="hidden sm:inline">{railMinimized ? "Guide" : "Parents"}</span>
+            </button>
+            <a
+              href={PLAY_STORE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full bg-kidnest-violet px-3 py-1.5 text-sm font-bold text-white hover:bg-[#6a3df0] sm:px-4"
+            >
+              Get the App
+            </a>
+          </div>
         </div>
       </header>
+      <form onSubmit={onSearch} className="flex border-b border-white/10 px-3 py-2 sm:hidden">
+        <label className="sr-only" htmlFor="catalog-search-mobile">
+          Search videos and channels
+        </label>
+        <input
+          id="catalog-search-mobile"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="Search"
+          className="min-w-0 flex-1 rounded-l-full border border-white/15 bg-[#121212] px-4 py-2 text-sm outline-none placeholder:text-white/45 focus:border-kidnest-violet"
+        />
+        <button
+          type="submit"
+          className="rounded-r-full border border-l-0 border-white/15 bg-white/10 px-4"
+          aria-label="Search"
+        >
+          <Search className="h-4 w-4" />
+        </button>
+      </form>
 
-      <div className="mx-auto flex w-full max-w-[1600px]">
+      <div className="flex w-full min-w-0">
         <Sidebar
           rail={rail}
           categories={categories}
           categoryId={categoryId}
           open={sidebarOpen}
+          collapsed={sidebarCollapsed}
           onClose={() => setSidebarOpen(false)}
           onRail={openRail}
           onCategory={(id) => {
@@ -315,17 +371,17 @@ export default function WatchHome() {
           }}
         />
 
-        <main className="min-w-0 flex-1 px-3 py-4 sm:px-5 sm:py-6">
-          <div className="mb-4 flex flex-wrap items-center gap-2">
-            <span className="rounded-full bg-kidnest-violet/20 px-3 py-1 text-xs font-bold text-kidnest-child-accent">
-              Parent library
+        <main className="kn-scroll min-w-0 flex-1 px-3 py-4 sm:px-6 sm:py-5">
+          <div className="mb-3 flex items-center gap-2">
+            <span className="rounded-lg bg-kidnest-violet px-2 py-0.5 text-[11px] font-bold tracking-wide text-white uppercase">
+              Parent
             </span>
             <span className="text-sm text-white/60">
-              {channelTotal > 0 ? `${channelTotal} channels` : "All channels"} open
+              {channelTotal > 0 ? `${channelTotal} channels` : "All channels"}
             </span>
           </div>
 
-          <div className="mb-4 flex gap-2 overflow-x-auto pb-1">
+          <div className="kn-scroll mb-5 flex gap-2 overflow-x-auto pb-1">
             <Chip active={!languageId} onClick={() => setLanguageId("")}>
               All languages
             </Chip>
@@ -434,6 +490,7 @@ export default function WatchHome() {
                 loading={loading && videos.length === 0}
                 empty="Nothing matches this filter yet."
                 hasMore={hasMoreVideos}
+                wide={railMinimized}
                 onOpen={openVideo}
                 onMore={() => void loadCatalog(videoPage + 1, channelPage, true)}
               />
@@ -453,9 +510,18 @@ export default function WatchHome() {
 
         <ParentRail
           open={parentsOpen}
+          minimized={railMinimized}
           channels={channels}
           channelTotal={channelTotal}
           onClose={() => setParentsOpen(false)}
+          onMinimize={() => {
+            setRailMinimized(true);
+            setParentsOpen(false);
+          }}
+          onExpand={() => {
+            setRailMinimized(false);
+            setParentsOpen(false);
+          }}
           onOpenChannel={openChannel}
           onShowChannels={() => openRail("channels")}
         />
@@ -469,6 +535,7 @@ function Sidebar({
   categories,
   categoryId,
   open,
+  collapsed,
   onClose,
   onRail,
   onCategory,
@@ -477,6 +544,7 @@ function Sidebar({
   categories: Category[];
   categoryId: string;
   open: boolean;
+  collapsed: boolean;
   onClose: () => void;
   onRail: (rail: Rail) => void;
   onCategory: (id: string) => void;
@@ -499,11 +567,15 @@ function Sidebar({
         />
       ) : null}
       <aside
-        className={`${
-          open ? "fixed inset-y-0 left-0 z-50 flex" : "hidden"
-        } w-64 flex-col overflow-y-auto border-r border-white/10 bg-[#16161a] p-4 lg:static lg:z-0 lg:flex lg:w-56 lg:bg-transparent`}
+        className={`kn-scroll flex-col overflow-y-auto border-r border-white/10 bg-[#0f0f0f] py-3 ${
+          open
+            ? "fixed inset-y-0 left-0 z-50 flex h-screen w-64 px-3"
+            : collapsed
+              ? "sticky top-14 hidden h-[calc(100vh-3.5rem)] w-[76px] px-1.5 lg:flex"
+              : "sticky top-14 hidden h-[calc(100vh-3.5rem)] w-60 px-3 lg:flex"
+        }`}
       >
-        <div className="mb-4 flex items-center justify-between lg:hidden">
+        <div className="mb-3 flex items-center justify-between px-2 lg:hidden">
           <span className="font-bold">Browse</span>
           <button type="button" onClick={onClose} aria-label="Close">
             <X className="h-5 w-5" />
@@ -514,24 +586,30 @@ function Sidebar({
             <button
               key={link.id}
               type="button"
+              title={link.label}
               onClick={() => onRail(link.id)}
-              className={`flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm font-semibold ${
-                rail === link.id ? "bg-white/10" : "hover:bg-white/5"
+              className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-semibold ${
+                collapsed ? "lg:justify-center lg:px-0" : ""
+              } ${
+                rail === link.id
+                  ? "bg-kidnest-violet/25 text-white"
+                  : "text-white/80 hover:bg-white/10"
               }`}
             >
-              <link.icon className="h-4 w-4" />
-              {link.label}
+              <link.icon className="h-[18px] w-[18px] shrink-0" />
+              <span className={collapsed ? "lg:hidden" : ""}>{link.label}</span>
             </button>
           ))}
         </nav>
-        <p className="mt-6 mb-2 px-3 text-xs font-bold uppercase tracking-wide text-white/40">
+        <p className={`mt-6 mb-2 px-3 text-[11px] font-bold tracking-wide text-white/40 uppercase ${collapsed ? "lg:hidden" : ""}`}>
           Categories
         </p>
+        <div className={collapsed ? "lg:hidden" : ""}>
         <button
           type="button"
           onClick={() => onCategory("")}
           className={`block w-full rounded-xl px-3 py-2 text-left text-sm ${
-            !categoryId ? "bg-white/10 font-semibold" : "text-white/70 hover:bg-white/5"
+            !categoryId ? "bg-white/10 font-semibold" : "text-white/70 hover:bg-white/10"
           }`}
         >
           All
@@ -541,16 +619,17 @@ function Sidebar({
             key={category.id}
             type="button"
             onClick={() => onCategory(category.id)}
-            className={`block w-full rounded-xl px-3 py-2 text-left text-sm ${
+            className={`block w-full truncate rounded-xl px-3 py-2 text-left text-sm ${
               categoryId === category.id
-                ? "bg-white/10 font-semibold"
-                : "text-white/70 hover:bg-white/5"
+                ? "bg-kidnest-violet/20 font-semibold text-white"
+                : "text-white/70 hover:bg-white/10"
             }`}
           >
             {category.name}
           </button>
         ))}
-        <div className="mt-8 space-y-2 px-3 text-xs text-white/40">
+        </div>
+        <div className={`mt-8 space-y-2 px-3 text-xs text-white/40 ${collapsed ? "lg:hidden" : ""}`}>
           <a href="/privacy" className="block hover:text-white">
             Privacy
           </a>
@@ -565,31 +644,62 @@ function Sidebar({
 
 function ParentRail({
   open,
+  minimized,
   channels,
   channelTotal,
   onClose,
+  onMinimize,
+  onExpand,
   onOpenChannel,
   onShowChannels,
 }: {
   open: boolean;
+  minimized: boolean;
   channels: CatalogChannel[];
   channelTotal: number;
   onClose: () => void;
+  onMinimize: () => void;
+  onExpand: () => void;
   onOpenChannel: (channel: CatalogChannel) => void;
   onShowChannels: () => void;
 }) {
+  if (minimized && !open) {
+    return (
+      <aside className="sticky top-14 hidden h-[calc(100vh-3.5rem)] w-12 shrink-0 flex-col items-center border-l border-white/10 bg-[#0f0f0f] py-3 xl:flex">
+        <button
+          type="button"
+          onClick={onExpand}
+          aria-label="Show parents panel"
+          className="rounded-full p-2 text-kidnest-violet hover:bg-white/10"
+        >
+          <PanelRightOpen className="h-5 w-5" />
+        </button>
+      </aside>
+    );
+  }
+
   const body = (
     <div className="space-y-4">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-xs font-bold uppercase tracking-wide text-kidnest-child-accent">
+          <p className="text-[11px] font-bold tracking-wide text-kidnest-child-accent uppercase">
             Parents
           </p>
-          <h2 className="text-lg font-extrabold">Every channel is open</h2>
+          <h2 className="text-base font-bold">Every channel is open</h2>
         </div>
-        <button type="button" className="xl:hidden" onClick={onClose} aria-label="Close parents">
-          <X className="h-5 w-5" />
-        </button>
+        <div className="flex items-center">
+          <button
+            type="button"
+            className="hidden rounded-full p-2 hover:bg-white/10 xl:inline-flex"
+            onClick={onMinimize}
+            aria-label="Minimize parents panel"
+          >
+            <PanelRightClose className="h-4 w-4" />
+          </button>
+          <button type="button" className="rounded-full p-2 hover:bg-white/10 xl:hidden" onClick={onClose} aria-label="Close parents">
+            <X className="h-5 w-5" />
+          </button>
+        </div>
       </div>
       <p className="text-sm text-white/70">
         This page uses the parent library from the app. Channels, playlists, shorts, and videos
@@ -642,9 +752,9 @@ function ParentRail({
         />
       ) : null}
       <aside
-        className={`${
-          open ? "fixed inset-y-0 right-0 z-50 flex" : "hidden"
-        } w-[min(100%,20rem)] flex-col overflow-y-auto border-l border-white/10 bg-[#16161a] p-4 xl:static xl:z-0 xl:flex xl:w-80 xl:bg-transparent`}
+        className={`kn-scroll top-14 h-[calc(100vh-3.5rem)] w-[min(100%,20rem)] shrink-0 flex-col overflow-y-auto border-l border-white/10 bg-[#0f0f0f] p-4 ${
+          open ? "fixed inset-y-0 right-0 z-50 flex h-screen" : "sticky hidden xl:flex"
+        }`}
       >
         {body}
       </aside>
@@ -705,6 +815,7 @@ function VideoGrid({
   loading,
   empty,
   hasMore,
+  wide,
   onOpen,
   onMore,
 }: {
@@ -713,34 +824,47 @@ function VideoGrid({
   loading: boolean;
   empty: string;
   hasMore?: boolean;
+  wide?: boolean;
   onOpen?: (video: CatalogVideo) => void;
   onMore?: () => void;
 }) {
   return (
     <section className="mb-8">
-      <h2 className="mb-3 text-lg font-extrabold sm:text-xl">{title}</h2>
+      <h2 className="mb-3 text-lg font-bold tracking-tight">{title}</h2>
       {loading ? <p className="text-sm text-white/50">Loading the library…</p> : null}
       {!loading && videos.length === 0 ? <p className="text-sm text-white/50">{empty}</p> : null}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      <div
+        className={`grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 ${
+          wide ? "xl:grid-cols-4" : "xl:grid-cols-3"
+        }`}
+      >
         {videos.map((video) => (
           <button
             key={video.id}
             type="button"
             onClick={() => onOpen?.(video)}
-            className="text-left"
+            className="group min-w-0 text-left"
           >
-            <div className="relative aspect-video overflow-hidden rounded-2xl bg-white/5">
+            <div className="relative aspect-video overflow-hidden rounded-xl bg-[#272727]">
               <Thumb src={video.thumbnailUrl} alt="" fill />
-              <span className="absolute right-2 bottom-2 rounded bg-black/75 px-1.5 py-0.5 text-xs">
+              <span className="absolute right-1.5 bottom-1.5 rounded bg-black/80 px-1.5 py-0.5 text-[11px] font-semibold">
                 {video.contentType === "SHORT" ? "Short" : formatDuration(video.durationSecs)}
               </span>
             </div>
-            <p className="mt-2 line-clamp-2 text-sm font-bold">{video.title}</p>
-            <p className="truncate text-xs text-white/55">
-              {video.channelName}
-              {categoryName(video) ? ` · ${categoryName(video)}` : ""}
-              {languageName(video) ? ` · ${languageName(video)}` : ""}
-            </p>
+            <div className="mt-2.5 flex gap-3">
+              <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-kidnest-violet to-kidnest-pink text-xs font-bold">
+                {(video.channelName || "K").slice(0, 1).toUpperCase()}
+              </span>
+              <span className="min-w-0">
+                <span className="line-clamp-2 text-sm font-semibold leading-5 group-hover:text-white">
+                  {video.title}
+                </span>
+                <span className="mt-1 block truncate text-xs text-white/55">
+                  {video.channelName}
+                  {categoryName(video) ? ` · ${categoryName(video)}` : ""}
+                </span>
+              </span>
+            </div>
           </button>
         ))}
       </div>
@@ -1137,8 +1261,8 @@ function Chip({
     <button
       type="button"
       onClick={onClick}
-      className={`shrink-0 rounded-full px-3 py-1.5 text-sm font-semibold ${
-        active ? "bg-white text-black" : "bg-white/10 text-white hover:bg-white/15"
+      className={`shrink-0 rounded-lg px-3 py-1.5 text-sm font-medium ${
+        active ? "bg-white text-black" : "bg-[#272727] text-white hover:bg-[#3f3f3f]"
       }`}
     >
       {children}
